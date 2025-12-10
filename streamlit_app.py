@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 import shap
 import joblib
@@ -33,8 +34,17 @@ if st.sidebar.button("Predict"):
         try:
             shap_values = explainer([resume_text])
             target_class_idx = list(model.classes_).index(pred)
-            st_shap = shap.plots.text(shap_values[0, :, target_class_idx], display=False)
-            st.write(st_shap)
+            plot_html = shap.plots.text(shap_values[0, :, target_class_idx], display=False)
+            # shap.plots.text returns HTML (string) when display=False
+            if hasattr(plot_html, "data"):
+                plot_html = plot_html.data
+            # Wrap in light background to improve contrast
+            wrapped_html = f"""
+            <div style='background:#ffffff;color:#000000;padding:10px;border:1px solid #ddd;'>
+                {plot_html}
+            </div>
+            """
+            components.html(wrapped_html, height=260, scrolling=True)
         except Exception as e:
             st.error(f"Could not compute SHAP explanation: {e}")
 
