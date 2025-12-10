@@ -12,10 +12,19 @@ st.title("Resume Categorization Model")
 st.caption("This resume categorization model is trained on a dataset of resumes and predicts the category of a resume based on the text of the resume.")
 
 # Load model - use relative path for deployment compatibility
-model_path = Path(__file__).parent / "resume_model.joblib"
+# Try multiple possible paths
+possible_paths = [
+    Path(__file__).parent / "resume_model.joblib",  # Same directory as script
+    Path("resume_model.joblib"),  # Current working directory
+    Path.cwd() / "resume_model.joblib",  # Explicit current directory
+]
 
-if not model_path.exists():
-    st.error(f"Model file not found at {model_path}. Please ensure 'resume_model.joblib' is in the repository root.")
+model_path = None
+for path in possible_paths:
+    if path.exists():
+        model_path = path
+        break
+
     st.stop()
 
 try:
@@ -24,7 +33,7 @@ try:
     text_masker = shap.maskers.Text()
     explainer = shap.Explainer(model.predict_proba, masker=text_masker, output_names=model.classes_)
 except Exception as e:
-    st.error(f"Error loading model: {e}")
+    st.error(f"Error loading model from {model_path}: {e}")
     st.stop()
 
 st.sidebar.header("Input")
