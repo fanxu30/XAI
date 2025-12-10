@@ -1,0 +1,16 @@
+# Python virtual env
+myenv/
+
+# Bytecode / cache
+__pycache__/
+*.pyc
+
+# Large artifacts
+*.joblib
+Resume.csv
+Resume_clean.csv
+
+# Streamlit / logs
+.streamlit/
+.DS_Store
+
