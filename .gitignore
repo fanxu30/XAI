@@ -7,6 +7,7 @@ __pycache__/
 
 # Large artifacts
 *.joblib
+!resume_model.joblib  # Allow the model file for deployment
 Resume.csv
 Resume_clean.csv
 
