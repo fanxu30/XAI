@@ -11,7 +11,9 @@ st.set_page_config(page_title="Resume Categorizer", layout="wide")
 st.title("Resume Categorization Model")
 st.caption("This resume categorization model is trained on a dataset of resumes and predicts the category of a resume based on the text of the resume.")
 
-model = joblib.load(Path("/Users/fanxu/XAI/resume_model.joblib"))
+# Load model - use relative path for deployment compatibility
+model_path = Path(__file__).parent / "resume_model.joblib"
+model = joblib.load(model_path)
 # Use simple text masker to avoid tokenizer expectations and explain predict_proba
 text_masker = shap.maskers.Text()
 explainer = shap.Explainer(model.predict_proba, masker=text_masker, output_names=model.classes_)
@@ -164,4 +166,4 @@ if st.sidebar.button("Predict"):
             st.error(f"Could not compute SHAP explanation: {e}")
 
 st.markdown("---")
-st.caption("Trained with TF-IDF + Logistic Regression on Resume.csv")
+st.caption("Models used were TF-IDF + Logistic Regression")
